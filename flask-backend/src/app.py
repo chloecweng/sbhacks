@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Set up a folder to store uploaded images (change path as needed)
-UPLOAD_FOLDER = 'uploads/'
+UPLOAD_FOLDER = 'src/uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Set allowed file extensions for uploaded images
@@ -17,23 +17,19 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Route to serve the HTML page
-@app.route('/')
-def index():
-    return render_template('index.html')  # This will load your HTML file
-
 # Route to handle image upload and prediction
 @app.route('/predict', methods=['POST'])
 def predict():
-    if 'file' not in request.files:
+    print("H BLAH BLAH BLAHI")
+    if not request.files:
         return jsonify({'result': 'No file part'}), 400
     file = request.files['file']
-    if file.filename == '':
-        return jsonify({'result': 'No selected file'}), 400
     if file and allowed_file(file.filename):
         # Securely save the file
+        # Ensure the upload directory exists
+        upload_folder = app.config['UPLOAD_FOLDER']
         filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        filepath = os.path.join(upload_folder, filename)
         file.save(filepath)
         
         # Here, you'll use your plant classifier to make a prediction
@@ -41,7 +37,7 @@ def predict():
         # For simplicity, let's just return a mock prediction
         prediction = "Rose"  # Replace with actual model prediction logic
         
-        return jsonify({'result': prediction})
+        return jsonify({'result': prediction}), 200
     return jsonify({'result': 'Invalid file format'}), 400
 
 if __name__ == '__main__':
