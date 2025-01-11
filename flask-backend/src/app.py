@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, jsonify
 import os
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -20,7 +21,6 @@ def allowed_file(filename):
 # Route to handle image upload and prediction
 @app.route('/predict', methods=['POST'])
 def predict():
-    print("H BLAH BLAH BLAHI")
     if not request.files:
         return jsonify({'result': 'No file part'}), 400
     file = request.files['file']
@@ -31,13 +31,16 @@ def predict():
         filename = secure_filename(file.filename)
         filepath = os.path.join(upload_folder, filename)
         file.save(filepath)
+
+        with open(filepath, 'rb') as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
         
         # Here, you'll use your plant classifier to make a prediction
         # For example, using a pre-trained model like TensorFlow, PyTorch, etc.
         # For simplicity, let's just return a mock prediction
         prediction = "Rose"  # Replace with actual model prediction logic
         
-        return jsonify({'result': prediction}), 200
+        return jsonify({'result': prediction, 'image_data': encoded_string}), 200
     return jsonify({'result': 'Invalid file format'}), 400
 
 if __name__ == '__main__':
