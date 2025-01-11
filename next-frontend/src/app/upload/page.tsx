@@ -1,94 +1,73 @@
 "use client";
 
 import React, { useState } from "react";
+import InputImage from "../components/image";
 
-const UploadPage: React.FC = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [prediction, setPrediction] = useState<string>("");
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+const Predict = () => {
+  const [file, setFile] = useState(null);
+  const [result, setResult] = useState("");
+  const [imageENC, setImageENC] = useState();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files ? e.target.files[0] : null;
-    setFile(selectedFile);
-
-    if (selectedFile) {
-      // Preview image
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(selectedFile);
-    }
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
-  const handlePredict = async () => {
+  const handlePredict = async (e) => {
+    e.preventDefault();
     if (!file) {
-      setPrediction("Please select an image.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch("http://127.0.0.1:5000/predict", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setPrediction(data.result);
-      } else {
-        setPrediction(data.error || "Error predicting the image.");
+      setResult("No file selected");
+    } else {
+      console.log(file);
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const res = await fetch("http://127.0.0.1:5000/predict", {
+          method: "POST",
+          body: formData,
+        });
+        if (!res.ok) {
+          setResult("error1");
+          throw new Error("problem predicting image");
+        }
+        const data = await res.json();
+        setResult(data.result);
+        setImageENC(data.image_data);
+      } catch (e) {
+        console.error(e);
+        setResult("error2");
       }
-    } catch (error) {
-      console.error("Error:", error);
-      setPrediction("Error connecting to the server.");
     }
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4 mt-8">
-      <h1 className="font-bold text-2xl">Upload an Image for Prediction</h1>
-
-      {/* File Input */}
-      <input
-        type="file"
-        onChange={handleFileChange}
-        className="border p-2 rounded"
-      />
-
-      {/* Image Preview */}
-      {imagePreview && (
-        <div>
-          <img
-            src={imagePreview}
-            alt="Image Preview"
-            className="mt-4 w-64 h-64 object-cover"
-          />
+    <div>
+      <div className="flex flex-col space-y-4 mt-8 ml-4">
+        <h1>
+          <b>Animal Classifier!</b>
+        </h1>
+        <input
+          className="flex flex-col"
+          type="file"
+          onChange={handleFileChange}
+        />
+        <div className="hover:cursor-grab" onClick={handlePredict}>
+          Predict
         </div>
-      )}
-
-      {/* Predict Button */}
-      <button
-        onClick={handlePredict}
-        className="bg-green-500 text-white rounded p-2 mt-4"
-      >
-        Predict
-      </button>
-
-      {/* Prediction Result */}
-      {prediction && (
-        <div className="mt-4">
-          <p>
-            <strong>Prediction:</strong> {prediction}
-          </p>
-        </div>
-      )}
+        {result && (
+          <div>
+            <span>Prediction: </span>
+            {result}
+          </div>
+        )}
+        {imageENC && (
+          <div>
+            <div>Your inputted image:</div>
+            <InputImage encodedString={imageENC} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default UploadPage;
+export default Predict;

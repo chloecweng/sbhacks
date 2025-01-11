@@ -1,40 +1,27 @@
 {
   "compilerOptions": {
-    "target": "ES2017", // Target JavaScript version
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ], // Libraries for type-checking
-    "allowJs": true, // Allow JavaScript files (if you use JS alongside TS)
-    "skipLibCheck": true, // Skip type-checking of declaration files
-    "strict": true, // Enable strict type-checking options
-    "noEmit": true, // Prevent emitting output (Next.js handles this)
-    "esModuleInterop": true, // Enable compatibility with CommonJS modules
-    "module": "esnext", // Use the modern module system
-    "moduleResolution": "node", // Resolve modules the same way Node.js does
-    "resolveJsonModule": true, // Allow importing JSON files
-    "isolatedModules": true, // Isolate modules (for optimization)
-    "jsx": "preserve", // Use the new JSX transform
-    "incremental": true, // Enable incremental compilation
-    "baseUrl": ".", // Set base directory for resolving modules
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ] // Enable absolute imports from src directory
-    },
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": [
-    "next-env.d.ts", // Include Next.js environment type definitions
-    "src/**/*", // Include all files under the src directory
-    ".next/types/**/*.ts" // Include Next.js types for the build
-  ],
-  "exclude": [
-    "node_modules" // Exclude node_modules from being type-checked
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

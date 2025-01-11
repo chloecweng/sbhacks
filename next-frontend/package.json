@@ -9,11 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@uploadthing/react": "^7.1.5",
     "next": "15.1.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "uploadthing": "^7.4.4"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
