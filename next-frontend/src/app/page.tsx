@@ -8,10 +8,10 @@ const Home: React.FC = () => {
       <div style={styles.container}>
         <header style={styles.header}>
           <h1 style={styles.title}>
-            Welcome to the Plant and Animal Identifier
+            Welcome to the Animal Identifier
           </h1>
           <p style={styles.paragraph}>
-            Upload an image of a plant or animal, and our app will identify it
+            Upload an image of an animal and our app will identify it
             for you!
           </p>
           <Link href="/upload">
