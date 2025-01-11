@@ -17,7 +17,6 @@ const Predict = () => {
     if (!file) {
       setResult("No file selected");
     } else {
-      console.log(file);
       const formData = new FormData();
       formData.append("file", file);
       try {
@@ -26,7 +25,7 @@ const Predict = () => {
           body: formData,
         });
         if (!res.ok) {
-          setResult("error1");
+          setResult("There was an error...");
           throw new Error("problem predicting image");
         }
         const data = await res.json();
@@ -34,27 +33,26 @@ const Predict = () => {
         setImageENC(data.image_data);
       } catch (e) {
         console.error(e);
-        setResult("error2");
+        setResult("There was an error...");
       }
     }
   };
 
   return (
     <div>
-      <div className="flex flex-col space-y-4 mt-8 ml-4">
+      <div className="flex flex-col justify-center items-center mx-autospace-y-4 mt-8 ml-4 space-y-6">
         <h1>
-          <b>Animal Classifier!</b>
+          <b className="text-6xl">Animal Classifier!</b>
         </h1>
-        <input
-          className="flex flex-col"
-          type="file"
-          onChange={handleFileChange}
-        />
-        <div className="hover:cursor-grab" onClick={handlePredict}>
+        <input type="file" onChange={handleFileChange} />
+        <button
+          className="hover:cursor-grab border rounded p-2"
+          onClick={handlePredict}
+        >
           Predict
-        </div>
+        </button>
         {result && (
-          <div>
+          <div className="text-2xl text-green-200">
             <span>Prediction: </span>
             {result}
           </div>
