@@ -14,6 +14,28 @@
   }
 }
 
+main {
+  background-image: url("./components/hippo.jpg");
+  background-size: cover; /* Ensures the image covers the entire viewport */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents tiling */
+  height: 100vh; /* Makes it fill the entire height of the viewport */
+  width: 100%; /* Makes it fill the entire width */
+  position: relative; /* Enables positioning for the dimming overlay */
+  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.6);
+}
+
+.uploadPage {
+  background-image: url("./components/orangutan.jpg");
+  background-size: cover; /* Ensures the image covers the entire viewport */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents tiling */
+  height: 100vh; /* Makes it fill the entire height of the viewport */
+  width: 100%; /* Makes it fill the entire width */
+  position: relative; /* Enables positioning for the dimming overlay */
+  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.6);
+}
+
 html,
 body {
   margin: 0;
