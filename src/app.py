@@ -11,11 +11,8 @@ app = Flask(__name__)
 # Set up a folder to store uploaded images
 UPLOAD_FOLDER = 'uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Set allowed file extensions for uploaded images
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-# Function to check allowed file types
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -24,13 +21,21 @@ def allowed_file(filename):
 model = models.resnet18(weights=ResNet18_Weights.DEFAULT)
 model.eval()  # Set to evaluation mode
 
-# Load ImageNet class labels
+# Load filtered animal-related class labels
+try:
+    with open('animal_classes.txt') as f:  # Use the filtered animal classes
+        animal_classes = [line.strip() for line in f.readlines()]
+except FileNotFoundError:
+    print("Error: 'animal_classes.txt' file not found. Ensure the file exists in the same directory.")
+    animal_classes = None
+
+# Load full ImageNet class labels
 try:
     with open('imagenet_classes.txt') as f:
-        class_labels = [line.strip() for line in f.readlines()]
+        full_class_labels = [line.strip() for line in f.readlines()]
 except FileNotFoundError:
     print("Error: 'imagenet_classes.txt' file not found. Ensure the file exists in the same directory.")
-    class_labels = None
+    full_class_labels = None
 
 # Preprocess image
 def preprocess_image(image_path):
@@ -42,12 +47,10 @@ def preprocess_image(image_path):
     image = Image.open(image_path).convert('RGB')  # Convert to RGB
     return preprocess(image).unsqueeze(0)  # Add batch dimension
 
-# Route to serve the HTML page
 @app.route('/')
 def index():
     return render_template('index.html')  # Ensure this file exists in `templates/`
 
-# Route to handle image upload and prediction
 @app.route('/predict', methods=['POST'])
 def predict():
     if 'file' not in request.files:
@@ -65,8 +68,16 @@ def predict():
             input_tensor = preprocess_image(filepath)
             with torch.no_grad():
                 outputs = model(input_tensor)
-                _, predicted_class = torch.max(outputs, 1)
-            prediction = class_labels[predicted_class.item()] if class_labels else "Unknown"
+                _, predicted_class_idx = torch.max(outputs, 1)
+            
+            # Get the full class label from ImageNet
+            full_prediction = full_class_labels[predicted_class_idx.item()] if full_class_labels else "Unknown"
+
+            # Check if the prediction is an animal class
+            if animal_classes and full_prediction in animal_classes:
+                prediction = full_prediction
+            else:
+                prediction = "Unknown"
 
             # Delete the uploaded file
             os.remove(filepath)
