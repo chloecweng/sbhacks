@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Classifier</title>
+</head>
+<body>
+    <h1>Upload an Image of a Plant</h1>
+    <form action="/predict" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload and Predict</button>
+    </form>
+    
+    <h2>Prediction Result:</h2>
+    <div id="result"></div>
+
+    <script>
+        // Fetch the result from the server and display it
+        const form = document.querySelector("form");
+        form.onsubmit = async (event) => {
+            event.preventDefault();
+            let formData = new FormData(form);
+            const response = await fetch("/predict", {
+                method: "POST",
+                body: formData,
+            });
+            const result = await response.json();
+            document.getElementById("result").innerText = "Predicted Plant Type: " + result.result;
+        }
+    </script>
+</body>
+</html>
