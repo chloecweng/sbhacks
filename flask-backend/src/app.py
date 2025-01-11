@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, jsonify
 import os
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
@@ -16,7 +16,7 @@ UPLOAD_FOLDER = 'src/uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Set allowed file extensions for uploaded images
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 
 # Function to check allowed file types
 def allowed_file(filename):
