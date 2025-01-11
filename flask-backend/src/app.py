@@ -27,13 +27,21 @@ def allowed_file(filename):
 model = models.resnet18(weights=ResNet18_Weights.DEFAULT)
 model.eval()  # Set to evaluation mode
 
-# Load ImageNet class labels
+# Load filtered animal-related class labels
+try:
+    with open('src/animal_classes.txt') as f:  # Use the filtered animal classes
+        animal_classes = [line.strip() for line in f.readlines()]
+except FileNotFoundError:
+    print("Error: 'animal_classes.txt' file not found. Ensure the file exists in the same directory.")
+    animal_classes = None
+
+# Load full ImageNet class labels
 try:
     with open('src/imagenet_classes.txt') as f:
-        class_labels = [line.strip() for line in f.readlines()]
+        full_class_labels = [line.strip() for line in f.readlines()]
 except FileNotFoundError:
     print("Error: 'imagenet_classes.txt' file not found. Ensure the file exists in the same directory.")
-    class_labels = None
+    full_class_labels = None
 
 # Preprocess image
 def preprocess_image(image_path):
@@ -66,7 +74,14 @@ def predict():
         with torch.no_grad():
             outputs = model(input_tensor)
             _, predicted_class = torch.max(outputs, 1)
-        prediction = class_labels[predicted_class.item()] if class_labels else "Unknown"
+        # Get the full class label from ImageNet
+        full_prediction = full_class_labels[predicted_class.item()] if full_class_labels else "Unknown"
+
+        # Check if the prediction is an animal class
+        if animal_classes and full_prediction in animal_classes:
+            prediction = full_prediction
+        else:
+            prediction = "Unknown"
         
         return jsonify({'result': prediction, 'image_data': encoded_string}), 200
     return jsonify({'result': 'Invalid file format'}), 400
