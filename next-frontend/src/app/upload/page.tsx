@@ -40,33 +40,34 @@ const Predict = () => {
   };
 
   return (
-    <div>
-      <div className="flex flex-col space-y-4 mt-8 ml-4">
-        <h1>
-          <b>Animal Classifier!</b>
+      <div className="w-full max-w-lg bg-white p-8 rounded-lg shadow-lg">
+        <h1 className="text-3xl font-bold text-center text-gray-700 mb-6">
+          Upload Your Image Below
         </h1>
         <input
-          className="flex flex-col"
+          className="w-full py-3 px-4 border border-gray-300 rounded-lg mb-4 cursor-pointer"
           type="file"
           onChange={handleFileChange}
         />
-        <div className="hover:cursor-grab" onClick={handlePredict}>
-          Predict
+        <div
+          onClick={handlePredict}
+          className="w-full py-3 text-center bg-custom-blue text-white font-semibold rounded-lg cursor-pointer mb-4 hover:bg-blue-500"
+          >
+          Click Here to Identify
         </div>
         {result && (
-          <div>
+          <div className="mt-4 text-lg font-semibold text-gray-600">
             <span>Prediction: </span>
             {result}
           </div>
         )}
         {imageENC && (
-          <div>
-            <div>Your inputted image:</div>
+          <div className="mt-6">
+            <div className="text-xl font-semibold text-gray-700">Your inputted image:</div>
             <InputImage encodedString={imageENC} />
           </div>
         )}
       </div>
-    </div>
   );
 };
 
