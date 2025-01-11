@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import InputImage from "../components/image";
+import Link from "next/link";
 
 const Predict = () => {
   const [file, setFile] = useState(null);
@@ -17,6 +18,7 @@ const Predict = () => {
     if (!file) {
       setResult("No file selected");
     } else {
+      console.log(file);
       const formData = new FormData();
       formData.append("file", file);
       try {
@@ -25,7 +27,7 @@ const Predict = () => {
           body: formData,
         });
         if (!res.ok) {
-          setResult("There was an error...");
+          setResult("error1");
           throw new Error("problem predicting image");
         }
         const data = await res.json();
@@ -33,37 +35,48 @@ const Predict = () => {
         setImageENC(data.image_data);
       } catch (e) {
         console.error(e);
-        setResult("There was an error...");
+        setResult("error2");
       }
     }
   };
 
   return (
-    <div>
-      <div className="flex flex-col justify-center items-center mx-autospace-y-4 mt-8 ml-4 space-y-6">
-        <h1>
-          <b className="text-6xl">Animal Classifier!</b>
+    <div className="flex flex-col items-center justify-center mx-auto">
+      <div className="w-full max-w-lg bg-white p-8 rounded-lg shadow-lg">
+        <h1 className="text-3xl font-bold text-center text-gray-700 mb-6">
+          Upload Your Image Below
         </h1>
-        <input type="file" onChange={handleFileChange} />
-        <button
-          className="hover:cursor-grab border rounded p-2"
+        <input
+          className="w-full py-3 px-4 border border-gray-300 rounded-lg mb-4 cursor-pointer"
+          type="file"
+          onChange={handleFileChange}
+        />
+        <div
           onClick={handlePredict}
+          className="w-full py-3 text-center bg-custom-blue text-white font-semibold rounded-lg cursor-pointer mb-4 hover:bg-blue-500"
         >
-          Predict
-        </button>
+          Click Here to Identify
+        </div>
         {result && (
-          <div className="text-2xl text-green-200">
+          <div className="mt-4 text-lg font-semibold text-gray-600">
             <span>Prediction: </span>
             {result}
           </div>
         )}
         {imageENC && (
-          <div>
-            <div>Your inputted image:</div>
-            <InputImage encodedString={imageENC} />
+          <div className="mt-6">
+            <div className="text-xl font-semibold text-gray-700">
+              Your inputted image:
+            </div>
+            <div className="flex items-center justify-center mx-auto">
+              <InputImage encodedString={imageENC} />
+            </div>
           </div>
         )}
       </div>
+      <Link className="mt-4 text-2xl border-2 p-2 rounded-2xl" href="/">
+        Home
+      </Link>
     </div>
   );
 };

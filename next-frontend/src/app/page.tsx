@@ -7,12 +7,9 @@ const Home: React.FC = () => {
     <main>
       <div style={styles.container}>
         <header style={styles.header}>
-          <h1 style={styles.title}>
-            Welcome to the Plant and Animal Identifier
-          </h1>
+          <h1 style={styles.title}>Welcome to the Animal Identifier</h1>
           <p style={styles.paragraph}>
-            Upload an image of a plant or animal, and our app will identify it
-            for you!
+            Upload an image of an animal and our app will identify it for you!
           </p>
           <Link href="/upload">
             <button style={styles.button}>Upload Image</button>
