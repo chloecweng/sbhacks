@@ -4,4 +4,4 @@ const config = {
   // other JS-based config
 };
 
-module.exports = config;
+export default config;
