@@ -1,7 +1,12 @@
 import React from "react";
 import Image from "next/image";
 
-const InputImage = ({ encodedString }) => {
+// Define the props type
+interface InputImageProps {
+  encodedString: string; // encodedString should be a string (base64 encoded)
+}
+
+const InputImage: React.FC<InputImageProps> = ({ encodedString }) => {
   console.log(encodedString);
   return (
     <div>
@@ -16,3 +21,4 @@ const InputImage = ({ encodedString }) => {
 };
 
 export default InputImage;
+

@@ -4,16 +4,21 @@ import React, { useState } from "react";
 import InputImage from "../components/image";
 import Link from "next/link";
 
+// Define the types for the states
 const Predict = () => {
-  const [file, setFile] = useState(null);
-  const [result, setResult] = useState("");
-  const [imageENC, setImageENC] = useState();
+  const [file, setFile] = useState<File | null>(null); // file can either be a File or null
+  const [result, setResult] = useState<string>(""); // result is a string
+  const [imageENC, setImageENC] = useState<string | null>(null); // imageENC can either be a string or null
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+  // Handle file input change
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
   };
 
-  const handlePredict = async (e) => {
+  // Handle the prediction logic
+  const handlePredict = async (e: React.FormEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (!file) {
       setResult("No file selected");
@@ -32,7 +37,7 @@ const Predict = () => {
         }
         const data = await res.json();
         setResult(data.result);
-        setImageENC(data.image_data);
+        setImageENC(data.image_data); // Assuming image_data is a string
       } catch (e) {
         console.error(e);
         setResult("error2");
